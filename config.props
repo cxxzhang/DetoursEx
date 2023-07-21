@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup Condition=" '$(PlatformToolset)'!='WindowsKernelModeDriver10.0' ">
+    <Link>
+      <MinimumRequiredVersion Condition=" '$(PlatformShortName)'=='x86' ">5.01</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition=" '$(PlatformShortName)'=='x64' ">5.02</MinimumRequiredVersion>
+    </Link>
+  </ItemDefinitionGroup>
+  <PropertyGroup Label="UserMacros">
+    <ProductName>NoName</ProductName>
+    <ProductRootDir>$(SolutionDir)..\</ProductRootDir>
+    <OutputBaseDir>$(ProductRootDir)Output\</OutputBaseDir>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='Win32') And ('$(Configuration)'=='Debug')">
+    <BinPath>$(OutputBaseDir)BinDebugX86\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibDebugX86\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbDebugX86\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpDebugX86\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='Win32') And ('$(Configuration)'=='Release')">
+    <BinPath>$(OutputBaseDir)BinX86\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibX86\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbX86\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpX86\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='x64') And ('$(Configuration)'=='Debug')">
+    <BinPath>$(OutputBaseDir)BinDebugX64\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibDebugX64\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbDebugX64\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpDebugX64\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='x64') And ('$(Configuration)'=='Release')">
+    <BinPath>$(OutputBaseDir)BinX64\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibX64\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbX64\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpX64\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='ARM64') And ('$(Configuration)'=='Debug')">
+    <BinPath>$(OutputBaseDir)BinDebugARM64\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibDebugARM64\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbDebugARM64\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpDebugARM64\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='ARM64') And ('$(Configuration)'=='Release')">
+    <BinPath>$(OutputBaseDir)BinARM64\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibARM64\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbARM64\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpARM64\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='ARM') And ('$(Configuration)'=='Debug')">
+    <BinPath>$(OutputBaseDir)BinDebugARM\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibDebugARM\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbDebugARM\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpDebugARM\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition=" ('$(Platform)'=='ARM') And ('$(Configuration)'=='Release')">
+    <BinPath>$(OutputBaseDir)BinARM\$(SolutionName)\</BinPath>
+    <LibPath>$(OutputBaseDir)LibARM\$(SolutionName)\</LibPath>
+    <PdbPath>$(OutputBaseDir)PdbARM\$(SolutionName)\</PdbPath>
+    <ObjPath>$(OutputBaseDir)TmpARM\$(SolutionName)\</ObjPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>global_setting</_PropertySheetDisplayName>
+    <OutDir Condition=" '$(ConfigurationType)'=='StaticLibrary' ">$(LibPath)</OutDir>
+    <OutDir Condition=" '$(ConfigurationType)'!='StaticLibrary' ">$(BinPath)</OutDir>
+    <IntDir>$(ObjPath)$(ProjectName)\</IntDir>
+    <TargetName>$(ProductName).$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>$(LibPath)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(PdbPath)$(TargetName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(LibPath)$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ClCompile>
+      <ProgramDataBaseFileName Condition=" '$(ConfigurationType)'=='StaticLibrary' ">$(PdbPath)$(TargetName).pdb</ProgramDataBaseFileName>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:sizedDealloc- /Zc:threadSafeInit- /Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <AdditionalIncludeDirectories>$(ProductRootDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="ProductRootDir">
+      <Value>$(ProductRootDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="OutputBaseDir">
+      <Value>$(OutputBaseDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ProductName">
+      <Value>$(ProductName)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BinPath">
+      <Value>$(BinPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LibPath">
+      <Value>$(LibPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PdbPath">
+      <Value>$(PdbPath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ObjPath">
+      <Value>$(ObjPath)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

@@ -269,6 +269,37 @@ extern "C" VOID* notify_caller_ms_x86(VOID* _esp, PDETROUS_NOFITY_FUN_INFO pInfo
 		info.ESP = _esp;
 		info.pContext = pInfo->pContext;
 		info.pFunInfo = pInfo;
+
+		ULONG32* pTmp = (ULONG32*)_esp;
+
+		info.pEAX = --pTmp;
+		info.pECX = --pTmp;
+		info.pEDX = --pTmp;
+		info.pEBX = --pTmp;
+		info.pESP = --pTmp;
+		info.pEBP = --pTmp;
+		info.pESI = --pTmp;
+		info.pEDI = --pTmp;
+
+		pTmp = (ULONG32*)_esp;
+		info.pParam1 = ++pTmp;//thiscall,fastcall这种用ecx传参先不考虑了
+		info.pParam2 = ++pTmp;
+		info.pParam3 = ++pTmp;
+		info.pParam4 = ++pTmp;
+		info.pParam5 = ++pTmp;
+		info.pParam6 = ++pTmp;
+		info.pParam7 = ++pTmp;
+		info.pParam8 = ++pTmp;
+		info.pParam9 = ++pTmp;
+		info.pParam10 = ++pTmp;
+		info.pParam11 = ++pTmp;
+		info.pParam12 = ++pTmp;
+		info.pParam13 = ++pTmp;
+		info.pParam14 = ++pTmp;
+		info.pParam15 = ++pTmp;
+		info.pParam16 = ++pTmp;
+
+
 		if (pNotify(&info))
 		{
 			return pInfo->pPointerHookRet;
@@ -285,13 +316,59 @@ extern "C" VOID* notify_caller_ms_x64(VOID* rcx, VOID* rdx,VOID* r8, VOID* r9, V
 	{
 		PF_DETOUR_HOOK_NOTIFY pNotify = (PF_DETOUR_HOOK_NOTIFY)pInfo->pNotifyFn;
 		DETROUS_HOOK_NOTIFY_INFO_STRCUT info;
+		ULONG64* pTmp = (ULONG64*)rsp;
+
+		--pTmp; //push rbp
+
 		info.RSP = rsp;
-		info.RCX = rcx;
-		info.RDX = rdx;
-		info.R8 = r8;
-		info.R9 = r9;
 		info.pContext = pInfo->pContext;
 		info.pFunInfo = pInfo;
+        info.pRSP = --pTmp;
+        info.pRAX = --pTmp;
+        info.pRCX = --pTmp;
+        info.pRDX = --pTmp;
+        info.pRBX = --pTmp;
+        info.pRBP = --pTmp;
+        info.pRSI = --pTmp;
+        info.pRDI = --pTmp;
+        info.pR8  = --pTmp;
+        info.pR9  = --pTmp;
+        info.pR10 = --pTmp;
+        info.pR11 = --pTmp;
+        info.pR12 = --pTmp;
+        info.pR13 = --pTmp;
+        info.pR14 = --pTmp;
+        info.pR15 = --pTmp;
+
+		//x64下，windows和linux的传参有点差异
+#ifdef _WIN32
+		info.pParam1 = info.pRCX;
+		info.pParam2 = info.pRDX;
+		info.pParam3 = info.pR8;
+		info.pParam4 = info.pR9;
+		pTmp = (ULONG64*)((UCHAR*)rsp + 0x20);//第5个参数应该是RSP + 0x20	
+		info.pParam5 = ++pTmp;
+		info.pParam6 = ++pTmp;
+#else
+		info.pParam1 = info.pRDI;
+		info.pParam2 = info.pRSI;
+		info.pParam3 = info.pRDX;
+		info.pParam4 = info.pRCX;
+		info.pParam5 = info.pR8;
+		info.pParam6 = info.pR9;
+		pTmp = (ULONG64*)((UCHAR*)rsp + 0x30);	
+#endif
+		info.pParam7 = ++pTmp;
+		info.pParam8 = ++pTmp;
+		info.pParam9 = ++pTmp;
+		info.pParam10 = ++pTmp;
+		info.pParam11 = ++pTmp;
+		info.pParam12 = ++pTmp;
+		info.pParam13 = ++pTmp;
+		info.pParam14 = ++pTmp;
+		info.pParam15 = ++pTmp;
+		info.pParam16 = ++pTmp;
+
 		if (pNotify(&info))
 		{
 			return pInfo->pPointerHookRet;
@@ -311,21 +388,73 @@ extern "C" VOID* notify_caller_ms_arm64(VOID* r0, VOID* r1, VOID* r2, VOID* r3,
 		PF_DETOUR_HOOK_NOTIFY pNotify = (PF_DETOUR_HOOK_NOTIFY)pInfo->pNotifyFn;
 		DETROUS_HOOK_NOTIFY_INFO_STRCUT info;
 		info.SP = sp;
-		info.R0 = r0;
-		info.R1 = r1;
-		info.R2 = r2;
-		info.R3 = r3;
-		info.R4 = r4;
-		info.R5 = r5;
-		info.R6 = r6;
-		info.R7 = r7;
 		info.pContext = pInfo->pContext;
 		info.pFunInfo = pInfo;
+
+		ULONG64* pTmp = (ULONG64*)((UCHAR*)sp - 0x10);
+		info.pX0 = pTmp;
+
+		pTmp = (ULONG64*)((UCHAR*)sp - 0x210);
+		pTmp++;//X0
+
+		info.pX1 = ++pTmp;
+		info.pX2 = ++pTmp;
+		info.pX3 = ++pTmp;
+		info.pX4 = ++pTmp;
+		info.pX5 = ++pTmp;
+		info.pX6 = ++pTmp;
+		info.pX7 = ++pTmp;
+		info.pX8 = ++pTmp;
+		info.pX9 = ++pTmp;
+		info.pX10 = ++pTmp;
+		info.pX11 = ++pTmp;
+		info.pX12 = ++pTmp;
+		info.pX13 = ++pTmp;
+		info.pX14 = ++pTmp;
+		info.pX15 = ++pTmp;
+		info.pX16 = ++pTmp;
+		info.pX17 = ++pTmp;
+		info.pX18 = ++pTmp;
+		info.pX19 = ++pTmp;
+		info.pX20 = ++pTmp;
+		info.pX21 = ++pTmp;
+		info.pX22 = ++pTmp;
+		info.pX23 = ++pTmp;
+		info.pX24 = ++pTmp;
+		info.pX25 = ++pTmp;
+		info.pX26 = ++pTmp;
+		info.pX27 = ++pTmp;
+		info.pX28 = ++pTmp;
+		info.pX29 = ++pTmp;
+		info.pX30 = ++pTmp;
+
+
+		info.pParam1 = info.pX0;
+		info.pParam2 = info.pX1;
+		info.pParam3 = info.pX2;
+		info.pParam4 = info.pX3;
+		info.pParam5 = info.pX4;
+		info.pParam6 = info.pX5;
+		info.pParam7 = info.pX6;
+		info.pParam8 = info.pX7;
+
+		pTmp = (ULONG64*)((UCHAR*)sp);
+		info.pParam9 = pTmp++;
+		info.pParam10 = pTmp++;
+		info.pParam11 = pTmp++;
+		info.pParam12 = pTmp++;
+		info.pParam13 = pTmp++;
+		info.pParam14 = pTmp++;
+		info.pParam15 = pTmp++;
+		info.pParam16 = pTmp++;
+
 		if (pNotify(&info))
 		{
 			return pInfo->pPointerHookRet;
 		}
 	}
+
+	return nullptr;
 
 	return nullptr;
 }
@@ -339,12 +468,46 @@ extern "C" VOID* notify_caller_ms_arm(VOID* r0, VOID* r1, VOID* r2, VOID* r3,
 		PF_DETOUR_HOOK_NOTIFY pNotify = (PF_DETOUR_HOOK_NOTIFY)pInfo->pNotifyFn;
 		DETROUS_HOOK_NOTIFY_INFO_STRCUT info;
 		info.SP = sp;
-		info.R0 = r0;
-		info.R1 = r1;
-		info.R2 = r2;
-		info.R3 = r3;
 		info.pContext = pInfo->pContext;
 		info.pFunInfo = pInfo;
+
+		ULONG32* pTmp = (ULONG32*)((UCHAR*)sp - 0x40); //
+
+		pTmp++;//R0
+
+		info.pR0 = pTmp++;
+		info.pR1 = pTmp++;
+		info.pR2 = pTmp++;
+		info.pR3 = pTmp++;
+		info.pR4 = pTmp++;
+		info.pR5 = pTmp++;
+		info.pR6 = pTmp++;
+		info.pR7 = pTmp++;
+		info.pR8 = pTmp++;
+		info.pR9 = pTmp++;
+		info.pR10 = pTmp++;
+		info.pR12 = pTmp++;
+
+
+		pTmp = (ULONG32*)sp;
+		info.pParam1 = info.pR0;
+		info.pParam2 = info.pR1;
+		info.pParam3 = info.pR2;
+		info.pParam4 = info.pR3;
+
+		info.pParam5 = pTmp++;
+		info.pParam6 = pTmp++;
+		info.pParam7 = pTmp++;
+		info.pParam8 = pTmp++;
+		info.pParam9 = pTmp++;
+		info.pParam10 = pTmp++;
+		info.pParam11 = pTmp++;
+		info.pParam12 = pTmp++;
+		info.pParam13 = pTmp++;
+		info.pParam14 = pTmp++;
+		info.pParam15 = pTmp++;
+		info.pParam16 = pTmp++;
+
 		if (pNotify(&info))
 		{
 			return pInfo->pPointerHookRet;

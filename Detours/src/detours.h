@@ -557,31 +557,101 @@ typedef VOID * PDETOUR_LOADED_BINARY;
 typedef struct _DETROUS_HOOK_NOTIFY_INFO_STRCUT
 {
     PVOID pContext;
-	PVOID pFunInfo;
+	PVOID pFunInfo;//PF_DETOUR_HOOK_NOTIFY
+
+	PVOID pParam1;//address saved params. most support 16 pararms, if not enough? you can count offset by yourself.
+	PVOID pParam2;
+	PVOID pParam3;
+	PVOID pParam4;
+	PVOID pParam5;
+	PVOID pParam6;
+	PVOID pParam7;
+	PVOID pParam8;
+	PVOID pParam9;
+	PVOID pParam10;
+	PVOID pParam11;
+	PVOID pParam12;
+	PVOID pParam13;
+	PVOID pParam14;
+	PVOID pParam15;
+	PVOID pParam16;
+
 #if defined(_X86_)
     PVOID ESP;
+	PVOID pEAX;//address saved eax value
+	PVOID pECX;
+	PVOID pEDX;
+	PVOID pEBX;
+	PVOID pESP;
+	PVOID pEBP;
+	PVOID pESI;
+	PVOID pEDI;
 #elif defined(_AMD64_)
     PVOID RSP;
-    PVOID RCX;
-    PVOID RDX;
-    PVOID R8;
-    PVOID R9;
+	PVOID pRSP;
+	PVOID pRAX;
+    PVOID pRCX;
+    PVOID pRDX;
+	PVOID pRBX;
+	PVOID pRBP;
+	PVOID pRSI;
+	PVOID pRDI;
+    PVOID pR8;
+    PVOID pR9;
+	PVOID pR10;
+	PVOID pR11;
+	PVOID pR12;
+	PVOID pR13;
+	PVOID pR14;
+	PVOID pR15;
 #elif defined(_ARM64_)
 	PVOID SP;
-	PVOID R0;
-	PVOID R1;
-	PVOID R2;
-	PVOID R3;
-	PVOID R4;
-	PVOID R5;
-	PVOID R6;
-	PVOID R7;
+	PVOID pX0;
+	PVOID pX1;
+	PVOID pX2;
+	PVOID pX3;
+	PVOID pX4;
+	PVOID pX5;
+	PVOID pX6;
+	PVOID pX7;
+	PVOID pX8;
+	PVOID pX9;
+	PVOID pX10;
+	PVOID pX11;
+	PVOID pX12;
+	PVOID pX13;
+	PVOID pX14;
+	PVOID pX15;
+	PVOID pX16;
+	PVOID pX17;
+	PVOID pX18;
+	PVOID pX19;
+	PVOID pX20;
+	PVOID pX21;
+	PVOID pX22;
+	PVOID pX23;
+	PVOID pX24;
+	PVOID pX25;
+	PVOID pX26;
+	PVOID pX27;
+	PVOID pX28;
+	PVOID pX29;
+	PVOID pX30;	
 #elif defined(_ARM_)
 	PVOID SP;
-	PVOID R0;
-	PVOID R1;
-	PVOID R2;
-	PVOID R3;
+	PVOID pR0;
+	PVOID pR1;
+	PVOID pR2;
+	PVOID pR3;
+	PVOID pR4;
+	PVOID pR5;
+	PVOID pR6;
+	PVOID pR7;
+	PVOID pR8;
+	PVOID pR9;
+	PVOID pR10;
+	PVOID pR11;
+	PVOID pR12;
 #endif   
 }DETROUS_HOOK_NOTIFY_INFO_STRCUT, *PDETROUS_HOOK_NOTIFY_INFO_STRCUT;
  

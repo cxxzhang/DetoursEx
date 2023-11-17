@@ -271,6 +271,7 @@ extern "C" VOID* notify_caller_ms_x86(VOID* _esp, PDETROUS_NOFITY_FUN_INFO pInfo
 		info.pFunInfo = pInfo;
 
 		ULONG32* pTmp = (ULONG32*)_esp;
+		--pTmp;  //push esp
 
 		info.pEAX = --pTmp;
 		info.pECX = --pTmp;

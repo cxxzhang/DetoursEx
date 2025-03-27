@@ -64,7 +64,7 @@
     <OutDir Condition=" '$(ConfigurationType)'=='StaticLibrary' ">$(LibPath)</OutDir>
     <OutDir Condition=" '$(ConfigurationType)'!='StaticLibrary' ">$(BinPath)</OutDir>
     <IntDir>$(ObjPath)$(ProjectName)\</IntDir>
-    <TargetName>$(ProductName).$(ProjectName)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <SpectreMitigation>false</SpectreMitigation>

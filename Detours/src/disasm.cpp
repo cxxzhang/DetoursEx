@@ -144,8 +144,8 @@
 //      offsets.
 //
 
-#pragma data_seg(".detourd")
-#pragma const_seg(".detourc")
+#pragma data_seg(".acmprd")
+#pragma const_seg(".acmprc")
 
 //////////////////////////////////////////////////// X86 and X64 Disassembler.
 //

@@ -35,32 +35,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\creatwth.cpp" />
-    <ClCompile Include="src\detours.cpp" />
-    <ClCompile Include="src\DetoursNotify.cpp" />
-    <ClCompile Include="src\disasm.cpp" />
-    <ClCompile Include="src\disolarm.cpp" />
-    <ClCompile Include="src\disolarm64.cpp" />
-    <ClCompile Include="src\disolia64.cpp" />
-    <ClCompile Include="src\disolx64.cpp" />
-    <ClCompile Include="src\disolx86.cpp" />
-    <ClCompile Include="src\image.cpp" />
-    <ClCompile Include="src\modules.cpp" />
-    <ClCompile Include="src\uimports.cpp">
+    <ClCompile Include="src\mem_patch.cpp" />
+    <ClCompile Include="src\detours.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\DetoursNotify.cpp" />
+    <ClCompile Include="src\detours_patch.cpp" />
+    <ClCompile Include="src\disasm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\mem_patch.h" />
     <ClInclude Include="src\detours.h" />
     <ClInclude Include="src\DetoursNotify.h" />
     <ClInclude Include="src\detver.h" />
+    <ClInclude Include="src\windows_shim.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

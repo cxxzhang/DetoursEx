@@ -16,43 +16,25 @@
     <Filter Include="DeeoursNotify">
       <UniqueIdentifier>{052c3ff8-1732-4f83-acee-8e25f57f3c72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="patch">
+      <UniqueIdentifier>{9aee9e28-9e23-4b40-b0cd-2e79a28293ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\creatwth.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\detours.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\disasm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\disolarm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\disolarm64.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\disolia64.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\disolx64.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\disolx86.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\image.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\modules.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\uimports.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\DetoursNotify.cpp">
       <Filter>DeeoursNotify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem_patch.cpp">
+      <Filter>patch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\detours_patch.cpp">
+      <Filter>patch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\detours.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,5 +47,16 @@
     <ClInclude Include="src\DetoursNotify.h">
       <Filter>DeeoursNotify</Filter>
     </ClInclude>
+    <ClInclude Include="src\mem_patch.h">
+      <Filter>patch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows_shim.h">
+      <Filter>patch</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -31,13 +31,19 @@ unsigned char hookFunX86[] =
 	/*00000031:*/ 0x83, 0xE8, 0x0D,    //sub         eax,0Dh
 	/*00000034:*/ 0xC3,    //ret
 	//notify_caller_jmp_target
-	/*00000035:*/ 0xFF, 0x25, 0xDD, 0xDD, 0xDD, 0xDD,    //jmp dword ptr ds:[DDDDDDDDh]，这里会被填充成返回地址
+	/*00000035:*/ 0xFF, 0x25, 0xDD, 0xDD, 0xDD, 0xDD,    //jmp         dword ptr ds:[DDDDDDDDh]，这里会被填充成Trampoline的地址
 	//notify_caller_ms_asm_exit
 	/*0000003B:*/ 0x83, 0xC4, 0x10,    //add         esp,10h
 	/*0000003E:*/ 0x9D,    //popfd
 	/*0000003F:*/ 0x61,    //popad
 	/*00000040:*/ 0xC9,    //leave
-	/*00000041:*/ 0xC2, 0x00, 0x00,    //ret         0;
+	/*00000041:*/ 0xC2, 0x00, 0x00,    //ret         4; 这里将汇编的04改成了0xC2, 0x04, 0x00 ->0xC2, 0x00, 0x00
+	//_get_notify_caller_ms_asm_size:
+	///*00000044:*/ 0x55,    //push        ebp
+	///*00000045:*/ 0x8B, 0xEC,    //mov         ebp,esp
+	///*00000047:*/ 0xB8, 0x00, 0x00, 0x00, 0x00,    //mov         eax,0
+	///*0000004C:*/ 0xC9,    //leave
+	///*0000004D:*/ 0xC3,    //ret
 };
 
 unsigned char hookFunX64[] =
@@ -80,15 +86,24 @@ unsigned char hookFunX64[] =
 	/*0000000000000096:*/ 0xF3, 0x44, 0x0F, 0x7F, 0x74, 0x24, 0x10,    //movdqu      xmmword ptr [rsp+10h],xmm14
 	/*000000000000009D:*/ 0xF3, 0x44, 0x0F, 0x7F, 0x3C, 0x24,    //movdqu      xmmword ptr [rsp],xmm15
 	/*00000000000000A3:*/ 0x54,    //push        rsp
-	/*00000000000000A4:*/ 0x48, 0x83, 0xE4, 0xF0,    //and         rsp,0FFFFFFFFFFFFFFF0h //16字节对齐
+	/*00000000000000A4:*/ 0x48, 0x83, 0xE4, 0xF0,    //and         rsp,0FFFFFFFFFFFFFFF0h
 	/*00000000000000A8:*/ 0x48, 0x83, 0xEC, 0x50,    //sub         rsp,50h
 	/*00000000000000AC:*/ 0xE8, 0xDE, 0x00, 0x00, 0x00,    //call        000000000000018F：notify_caller_get_rip
 	/*00000000000000B1:*/ 0x48, 0x89, 0x44, 0x24, 0x40,    //mov         qword ptr [rsp+40h],rax
 	/*00000000000000B6:*/ 0x48, 0x8B, 0xC5,    //mov         rax,rbp
 	/*00000000000000B9:*/ 0x48, 0x83, 0xC0, 0x08,    //add         rax,8
+#ifdef _WIN32
 	/*00000000000000BD:*/ 0x48, 0x89, 0x44, 0x24, 0x20,    //mov         qword ptr [rsp+20h],rax
+#else
+	/*00000000000000BD:*/ 0x48, 0x89, 0x44, 0x24, 0x00,    //mov         qword ptr [rsp+0h],rax
+#endif
 	/*00000000000000C2:*/ 0x48, 0x8B, 0x44, 0x24, 0x40,    //mov         rax,qword ptr [rsp+40h]
+
+#ifdef _WIN32
 	/*00000000000000C7:*/ 0x48, 0x89, 0x44, 0x24, 0x28,    //mov         qword ptr [rsp+28h],rax
+#else
+	/*00000000000000C7:*/ 0x48, 0x89, 0x44, 0x24, 0x08,    //mov         qword ptr [rsp+08h],rax
+#endif
 	/*00000000000000CC:*/ 0x48, 0xB8, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,    //mov         rax,0AAAAAAAAAAAAAAAAh，会被填充成notify_caller_ms_x64函数地址
 	/*00000000000000D6:*/ 0xFF, 0xD0,    //call        rax
 	/*00000000000000D8:*/ 0x48, 0x85, 0xC0,    //test        rax,rax
@@ -138,7 +153,7 @@ unsigned char hookFunX64[] =
 	/*0000000000000197:*/ 0xC3,    //ret
 	//notify_caller_jmp_target
 	/*0000000000000198:*/ 0xFF, 0x25, 0x00, 0x00, 0x00, 0x00,    //jmp         qword ptr [000000000000019Eh]
-	/*000000000000019E:*/ 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD,   //0DDDDDDDDDDDDDDDDh ，这里会被填充成返回地址   
+	/*000000000000019E:*/ 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD, 0xDD,   //0DDDDDDDDDDDDDDDDh ，这里会被填充成Trampoline的地址   
 
 	//notify_caller_ms_asm_exit
 	/*00000000000001A6:*/ 0x48, 0x83, 0xC4, 0x50,    //add         rsp,50h
@@ -178,7 +193,11 @@ unsigned char hookFunX64[] =
 	/*000000000000024F:*/ 0x58,    //pop         rax
 	/*0000000000000250:*/ 0x5C,    //pop         rsp
 	/*0000000000000251:*/ 0xC9,    //leave
-	/*0000000000000252:*/ 0xC2, 0x00, 0x00,    //ret         0;
+	/*0000000000000252:*/ 0xC2, 0x00, 0x00,    //ret         4;这里将汇编的04改成了0xC2, 0x04, 0x00 ->0xC2, 0x00, 0x00
+  //get_notify_caller_ms_asm_size:
+  ///*0000000000000255:*/ 0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,    //mov         rax,0
+  ///*000000000000025C:*/ 0xC3,    //ret
+
 
 };
 
@@ -196,9 +215,9 @@ unsigned char hookFunARM[] =
 	/*00000018:*/ 0x84,  0xB0,    //sub         sp,sp,#0x10
 	/*0000001A:*/ 0x59,  0xA8,    //add         r0,sp,#0x164
 	/*0000001C:*/ 0x00,  0x90,    //str         r0,[sp]
-	/*0000001E:*/ 0x00,  0xF0, 0x13,  0xF8,    //bl  get_notify_caller_ms_asm_pc
+	/*0000001E:*/ 0x00,  0xF0, 0x13,  0xF8,    //bl          get_notify_caller_ms_asm_pc,注意这里不能直接扣obj的机器码，obj里面还是占位符
 	/*00000022:*/ 0x01,  0x90,    //str         r0,[sp,#4]
-	/*00000024:*/ 0x13,  0x48,    //ldr         r0,notify_caller_ms_arm ,会被填充成notify_caller_ms_arm的地址
+	/*00000024:*/ 0x13,  0x48,    //ldr         r0,get_notify_caller_ms_asm_size ,会被填充成notify_caller_ms_arm64的地址
 	/*00000026:*/ 0x80,  0x47,    //blx         r0
 	/*00000028:*/ 0x00,  0x28,    //cmp         r0,#0
 	/*0000002A:*/ 0x11,  0xD0,    //beq         get_notify_caller_ms_asm_exit
@@ -232,8 +251,8 @@ unsigned char hookFunARM[] =
 	/*00000070:*/ 0x00,  0xBF,    //nop
 	/*00000072:*/ 0x00,  0xBF,    //nop
 
-	//notify_caller_ms_arm:
-	/*00000074:*/ 0xAA, 0xAA,0xAA,  0xAA,  //
+	//get_notify_caller_ms_asm_size:
+	/*00000074:*/ 0xDD, 0xCC,0xBB,  0xAA,  //
 
 
 
@@ -269,14 +288,14 @@ unsigned char hookFunARM64[] =
   /*000000000000005C:*/ 0xE4,  0x17,  0x0A,  0xAD,    //stp         q4,q5,[sp,#0x140]
   /*0000000000000060:*/ 0xE6,  0x1F,  0x0B,  0xAD,    //stp         q6,q7,[sp,#0x160]
   /*0000000000000064:*/ 0xE0,  0x03,  0x00,  0xF9,    //str         x0,[sp]
-  /*0000000000000068:*/ 0x24,  0x00,  0x00,  0x94,    //bl          get_notify_caller_ms_asm_pc
+  /*0000000000000068:*/ 0x24,  0x00,  0x00,  0x94,    //bl          get_notify_caller_ms_asm_pc,注意这里不能直接扣obj的机器码，obj里面还是占位符
   /*000000000000006C:*/ 0xE0,  0x07,  0x00,  0xF9,    //str         x0,[sp,#8]
   /*0000000000000070:*/ 0xFF,  0x83,  0x00,  0xD1,    //sub         sp,sp,#0x20
   /*0000000000000074:*/ 0xE0,  0x13,  0x40,  0xF9,    //ldr         x0,[sp,#0x20]   //构造第九个参数，原sp
   /*0000000000000078:*/ 0xE0,  0x03,  0x00,  0xF9,    //str         x0,[sp]
   /*000000000000007C:*/ 0xE0,  0x17,  0x40,  0xF9,    //ldr         x0,[sp,#0x28]  //构造第九10个参数，本函数地址
   /*0000000000000080:*/ 0xE0,  0x07,  0x00,  0xF9,    //str         x0,[sp,#8]
-  /*0000000000000084:*/ 0xA8,  0x04,  0x00,  0x58,    //ldr         x8,0000000000000118   ldr x8, =0xaaaaaaaaaaaaaaaa,会被填充成notify_caller_ms_arm64的地址
+  /*0000000000000084:*/ 0xA8,  0x04,  0x00,  0x58,    //ldr         x8,0000000000000118   ldr x8, =0xbbbbbbbbaaaaaaaa,会被填充成notify_caller_ms_arm64的地址
   /*0000000000000088:*/ 0x00,  0x01,  0x3F,  0xD6,    //blr         x8
   /*000000000000008C:*/ 0xFF,  0x83,  0x00,  0x91,    //add         sp,sp,#0x20
   /*0000000000000090:*/ 0xE0,  0x07,  0x48,  0xAD,    //ldp         q0,q1,[sp,#0x100]
@@ -313,12 +332,10 @@ unsigned char hookFunARM64[] =
   /*0000000000000104:*/ 0xE0,  0x03,  0x40,  0xF9,    //ldr         x0,[sp]
   /*0000000000000108:*/ 0xFF,  0x43,  0x00,  0x91,    //add         sp,sp,#0x10
   /*000000000000010C:*/ 0xC0,  0x03,  0x5F,  0xD6,    //ret
-
-  /*0000000000000110:*/ 0x1F,  0x20,  0x03,  0xD5,    //nop
+//get_notify_caller_ms_asm_size:
+  /*0000000000000110:*/ 0xC0,  0x03,  0x5F,  0xD6,    //ret
   /*0000000000000114:*/ 0x1F,  0x20,  0x03,  0xD5,    //nop
-
-  //notify_caller_ms_arm64 addr:
-  /*0000000000000118:*/ 0xAA,  0xAA,  0xAA,  0xAA,    //
-  /*000000000000011C:*/ 0xAA,  0xAA,  0xAA,  0xAA,
+  /*0000000000000118:*/ 0xAA,  0xAA,  0xAA,  0xAA,    //orn         x10,x21,x10,asr #0x2A
+  /*000000000000011C:*/ 0xBB,  0xBB,  0xBB,  0xBB,
 
 };

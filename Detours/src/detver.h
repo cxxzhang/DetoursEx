@@ -11,7 +11,7 @@
 #include "winver.h"
 #if 0
 #include <windows.h>
-#include <detours.h>
+#include "detours.h"
 #else
 #ifndef DETOURS_STRINGIFY
 #define DETOURS_STRINGIFY_(x)    #x
